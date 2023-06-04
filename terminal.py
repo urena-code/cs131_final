@@ -46,29 +46,30 @@ def sub(project_id: str, subscription_id: str, timeout: Optional[float] = None) 
     # [END pubsub_quickstart_subscriber]
 
 def pub(project_id: str, topic_id: str, message) -> None:
-publisher = pubsub_v1.PublisherClient()
-# The `topic_path` method creates a fully qualified identifier
-# in the form `projects/{project_id}/topics/{topic_id}`
-topic_path = publisher.topic_path(project_id, topic_id)
+    publisher = pubsub_v1.PublisherClient()
+    # The `topic_path` method creates a fully qualified identifier
+    # in the form `projects/{project_id}/topics/{topic_id}`
+    topic_path = publisher.topic_path(project_id, topic_id)
 
-data_str = message
-# Data must be a bytestring
-data = data_str.encode("utf-8")
-# When you publish a message, the client returns a future.
-future = publisher.publish(topic_path, data)
-print(future.result())
+    data_str = message
+    # Data must be a bytestring
+    data = data_str.encode("utf-8")
+    # When you publish a message, the client returns a future.
+    future = publisher.publish(topic_path, data)
+    #print(future.result())
+    message_id = future.result()
 
-print(f"Published {data.decode()} to {topic_path}: {message_id}")
+    print(f"Published {data.decode()} to {topic_path}: {message_id}")
 
 
 if __name__ == "__main__":
 
-    # project_id = 'second-core-387205'
+    project_id = 'second-core-387205'
     # project_id = 'nimble-radio-387221'
     ready_topic = 'ready'
     
-    #sub_chat = 'chat-gpt-sub'
-    sub_chat. = 'my_sub'
+    sub_chat = 'chat-gpt-sub'
+    #sub_chat = 'my_sub'
 
     pub(project_id, ready_topic, 'Ready')
     
