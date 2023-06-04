@@ -24,8 +24,6 @@ def sub(project_id: str, subscription_id: str, timeout: Optional[float] = None) 
     # in the form `projects/{project_id}/subscriptions/{subscription_id}`
     subscription_path = subscriber.subscription_path(project_id, subscription_id)
 
-
-
     #this is the HANDLER for the message 
     def callback(message: pubsub_v1.subscriber.message.Message) -> None:
         print(f"Received {message.data.decode()}.")
@@ -48,20 +46,19 @@ def sub(project_id: str, subscription_id: str, timeout: Optional[float] = None) 
     # [END pubsub_quickstart_subscriber]
 
 def pub(project_id: str, topic_id: str, message) -> None:
-    """Publishes a message to a Pub/Sub topic."""
-    # Initialize a Publisher client.
-    client = pubsub_v1.PublisherClient()
-    # Create a fully qualified identifier of form `projects/{project_id}/topics/{topic_id}`
-    topic_path = client.topic_path(project_id, topic_id)
+publisher = pubsub_v1.PublisherClient()
+# The `topic_path` method creates a fully qualified identifier
+# in the form `projects/{project_id}/topics/{topic_id}`
+topic_path = publisher.topic_path(project_id, topic_id)
 
-    # Data sent to Cloud Pub/Sub must be a bytestring.
-    data = bytes(message, 'utf-8')
+data_str = message
+# Data must be a bytestring
+data = data_str.encode("utf-8")
+# When you publish a message, the client returns a future.
+future = publisher.publish(topic_path, data)
+print(future.result())
 
-    # When you publish a message, the client returns a future.
-    api_future = client.publish(topic_path, data)
-    message_id = api_future.result()
-
-    print(f"Published {data.decode()} to {topic_path}: {message_id}")
+print(f"Published {data.decode()} to {topic_path}: {message_id}")
 
 
 if __name__ == "__main__":
